@@ -1,0 +1,25 @@
+
+void Backup(std::vector<std::string> &students_table_name, std::vector<std::string> &variants_table_name,
+            std::vector<std::string> &directory, std::vector<std::vector<Student>> &students,
+            std::vector<std::vector<Variant>> &variants, std::vector<std::vector<StudentVariant>> &testing_table,
+            std::vector<int> &max_name_length_backup, std::vector<int> &max_path_length_backup,
+            std::vector<int> &current_id_student_backup, std::vector<int> &current_id_variant_backup,
+            std::vector<std::string> &students_table_name_backup, std::vector<std::string> &variants_table_name_backup,
+            std::vector<std::string> &directory_backup, std::vector<std::vector<Student>> &students_backup,
+            std::vector<std::vector<Variant>> &variants_backup,
+            std::vector<std::vector<StudentVariant>> &testing_table_backup, std::vector<int> max_name_length,
+            std::vector<int> max_path_length, std::vector<int> current_id_student,
+            std::vector<int> current_id_variant);
+
+void RevertBackup(std::vector<std::string> &students_table_name, std::vector<std::string> &variants_table_name,
+                  std::vector<std::string> &directory, std::vector<std::vector<Student>> &students,
+                  std::vector<std::vector<Variant>> &variants, std::vector<std::vector<StudentVariant>> &testing_table,
+                  std::vector<int> &max_name_length_backup, std::vector<int> &max_path_length_backup,
+                  std::vector<int> &current_id_student_backup, std::vector<int> &current_id_variant_backup,
+                  std::vector<std::string> &students_table_name_backup,
+                  std::vector<std::string> &variants_table_name_backup,
+                  std::vector<std::string> &directory_backup, std::vector<std::vector<Student>> &students_backup,
+                  std::vector<std::vector<Variant>> &variants_backup,
+                  std::vector<std::vector<StudentVariant>> &testing_table_backup, std::vector<int> max_name_length,
+                  std::vector<int> max_path_length, std::vector<int> current_id_student,
+                  std::vector<int> current_id_variant);

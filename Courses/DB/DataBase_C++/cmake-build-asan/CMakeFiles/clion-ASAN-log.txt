@@ -1,0 +1,4 @@
+/Users/kaparya/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=ASAN -DCMAKE_MAKE_PROGRAM=/Users/kaparya/Applications/CLion.app/Contents/bin/ninja/mac/ninja -DCMAKE_BUILD_TYPE=ASAN -G Ninja -S "/Users/kaparya/HSE/C++ projects/DB/Lab1" -B "/Users/kaparya/HSE/C++ projects/DB/Lab1/cmake-build-asan"
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/kaparya/HSE/C++ projects/DB/Lab1/cmake-build-asan
