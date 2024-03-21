@@ -29,7 +29,7 @@ public class Main {
         try {
             CheckFile(inputFile, 1);
         } catch (IOException err) {
-            System.out.println(err.getMessage());
+            System.out.println("IOException: " + err.getMessage());
             return;
         }
 
@@ -40,7 +40,7 @@ public class Main {
         try {
             CheckFile(ouputFile, 2);
         } catch (IOException err) {
-            System.out.println(err.getMessage());
+            System.out.println("IOException: " + err.getMessage());
             return;
         }
 
@@ -83,6 +83,7 @@ public class Main {
             fileWriter.close();
         } catch (IOException err) {
             System.out.println("IOException: " + err.getMessage());
+            return;
         }
 
         System.out.println("Letters counted.");
