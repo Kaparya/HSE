@@ -61,22 +61,26 @@ public class Main {
                     }
                 }
             }
+            fileReaderBuffered.close();
+            fileReader.close();
 
             FileWriter fileWriter = new FileWriter(ouputFile);
             BufferedWriter fileWriterBuffered = new BufferedWriter(fileWriter);
-            for (char pos = 0; pos < 52; ++pos) {
+            for (int pos = 0; pos < 52; ++pos) {
 
-                char help;
-                if (pos < 26) {
-                    help = (char) (pos + 'A');
-                } else {
-                    help = (char) (pos - 26 + 'a');
+                if (numberOfLetters[pos] > 0) {
+                    char help;
+                    if (pos < 26) {
+                        help = (char) (pos + 'A');
+                    } else {
+                        help = (char) (pos - 26 + 'a');
+                    }
+
+                    fileWriterBuffered.write(help + " " + numberOfLetters[pos] + "\n");
                 }
-
-                fileWriterBuffered.write(help + " " + numberOfLetters[pos] + "\n");
-
             }
             fileWriterBuffered.close();
+            fileWriter.close();
         } catch (IOException err) {
             System.out.println("IOException: " + err.getMessage());
         }
