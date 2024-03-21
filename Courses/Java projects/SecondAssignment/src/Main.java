@@ -77,6 +77,7 @@ public class Main {
                     }
                 }
             }
+            fileReaderBuffered.close();
             fileReader.close();
 
             // Дальше мы записываем в выходной файл количество посчитанных символов,
@@ -96,10 +97,10 @@ public class Main {
                     fileWriterBuffered.write(help + " " + numberOfLetters[pos] + "\n");
                 }
             }
+            fileWriterBuffered.close();
             fileWriter.close();
         } catch (IOException err) {
             System.out.println("IOException: " + err.getMessage());
-            return;
         }
 
         // Если все завершилось хорошо, без исключений - выводится Letters counted.
