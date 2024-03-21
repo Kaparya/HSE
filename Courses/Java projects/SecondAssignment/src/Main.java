@@ -3,13 +3,16 @@ import java.util.Scanner;
 
 public class Main {
 
+    // Функция проверяющая права доступа файла, а также его существование (для входного файла)
+    // Если все хорошо, то она выводит "File correct.", иначе - кидает IOException, которое мы
+    // обрабатываем в main.
     private static void CheckFile(File file, int typeIO) throws IOException {
 
         // If typeIO == 1 => Input file
         // If typeIO == 2 => Output file
 
         if (!file.exists()) {
-            throw new IOException("Wrong output file!");
+            throw new IOException("Wrong input file!");
         } else if (typeIO == 1 && !file.canRead()) {
             throw new IOException("Wrong input file rights!");
         } else if (typeIO == 2 && !file.canWrite()) {
@@ -21,10 +24,12 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        // Считывание имени входного файла
         Scanner scan = new Scanner(System.in);
         System.out.print("Enter input file: ");
         String inputFileName = scan.nextLine();
 
+        // Проверка входного файла
         File inputFile = new File(inputFileName);
         try {
             CheckFile(inputFile, 1);
@@ -33,9 +38,12 @@ public class Main {
             return;
         }
 
+        // Считывание выходного файла
         System.out.print("Enter output file: ");
         String outputFileName = scan.next();
 
+        // Проверка выходного файла - если его нет, то он создается + Выводится "File ... was created"
+        // Если он есть, то проверяются прова доступа и если что ловится исключение
         File ouputFile = new File(outputFileName);
         try {
             if (!ouputFile.createNewFile()) {
@@ -48,9 +56,13 @@ public class Main {
             return;
         }
 
+        // Дальше большой блок подсчета символов.
+        // Он ловит возможные IOExceptions
         try {
+            // Массив с количеством элементов
             int[] numberOfLetters = new int[52];
 
+            // В цикле читается файл и сразу считаются буквы
             FileReader fileReader = new FileReader(inputFile);
             BufferedReader fileReaderBuffered = new BufferedReader(fileReader);
             String data;
@@ -65,9 +77,10 @@ public class Main {
                     }
                 }
             }
-            fileReaderBuffered.close();
             fileReader.close();
 
+            // Дальше мы записываем в выходной файл количество посчитанных символов,
+            // я решил не выводить символы для которых количество равно нулю
             FileWriter fileWriter = new FileWriter(ouputFile);
             BufferedWriter fileWriterBuffered = new BufferedWriter(fileWriter);
             for (int pos = 0; pos < 52; ++pos) {
@@ -83,13 +96,13 @@ public class Main {
                     fileWriterBuffered.write(help + " " + numberOfLetters[pos] + "\n");
                 }
             }
-            fileWriterBuffered.close();
             fileWriter.close();
         } catch (IOException err) {
             System.out.println("IOException: " + err.getMessage());
             return;
         }
 
+        // Если все завершилось хорошо, без исключений - выводится Letters counted.
         System.out.println("Letters counted.");
     }
 }
