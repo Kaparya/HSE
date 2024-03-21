@@ -38,7 +38,11 @@ public class Main {
 
         File ouputFile = new File(outputFileName);
         try {
-            CheckFile(ouputFile, 2);
+            if (!ouputFile.createNewFile()) {
+                CheckFile(ouputFile, 2);
+            } else {
+                System.out.println("File " + outputFileName + " was created.");
+            }
         } catch (IOException err) {
             System.out.println("IOException: " + err.getMessage());
             return;
