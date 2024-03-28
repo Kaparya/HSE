@@ -1,61 +1,44 @@
 #include <iostream>
-#include <thread>
-#include <mutex>
 
-std::vector<std::mutex> forks(5);
-
-const int n = 5;
-
-void ZeroEvenOdd() {
-    forks[2].lock();
-    forks[1].lock();
-}
-
-void printNumber(const int& value) {
-    std::cout << value;
-    std::cout.flush();
-}
-
-// printNumber(x) outputs "x", where x is an integer.
-void zero() {
-    for (int i = 0; i < n; ++i) {
-        forks[0].lock();
-        printNumber(0);
-        if (i % 2 == 0) {
-            forks[1].unlock();
-        } else {
-            forks[2].unlock();
-        }
+std::size_t string_length(const char* s) {
+    std::size_t n = 0;
+    while (*s != '\0') {
+        ++s;
+        ++n;
     }
+    return n;
 }
 
-void even() {
-    for (int i = 2; i <= n; i += 2) {
-        forks[2].lock();
-        printNumber(i);
-        forks[0].unlock();
+char* string_copy(char* d, const char* s) {
+    char* p = d;
+    while ((*p = *s) != '\0') {
+        ++p;
+        ++s;
     }
+    *p = '\0';
+    return d;
 }
 
-void odd() {
-    for (int i = 1; i <= n; i += 2) {
-        forks[1].lock();
-        printNumber(i);
-        forks[0].unlock();
-    }
+char* string_duplicate(const char* s) {
+    std::size_t n = string_length(s);
+    char* result = new char[n + 1];
+    string_copy(result, s);
+    return result;
+}
+
+char* string_concatenate(const char* first, const char* second) {
+    std::size_t first_len = string_length(first);
+    std::size_t second_len = string_length(second);
+    char* result = new char[first_len + second_len + 1];
+    string_copy(result, first);
+    string_copy(result + first_len, second);
+    return result;
 }
 
 int main() {
-
-    ZeroEvenOdd();
-
-    std::thread z(zero);
-    std::thread o(odd);
-    std::thread e(even);
-
-    z.join();
-    o.join();
-    e.join();
-
-    return 0;
+    char* s = string_concatenate("Hello, ", "World!");
+    char* t = string_duplicate(s);
+    std::cout << t << '\n';
+    delete[] s;
+    delete[] t;
 }
