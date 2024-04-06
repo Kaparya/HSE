@@ -15,7 +15,10 @@ public class Main {
 
     // Функция проверки правильности ввода ФИО (должны быть только буквы)
     // Иначе бросается исключение CharConversionException.
-    static void CheckName(String value) throws CharConversionException {
+    static void CheckName(String value) throws CharConversionException, StringIndexOutOfBoundsException {
+        if (value.isEmpty()) {
+            throw new StringIndexOutOfBoundsException("Empty data!");
+        }
         for (int i = 0; i < value.length(); ++i) {
             if (!Character.isAlphabetic(value.charAt(i))) {
                 throw new CharConversionException("Wrong character in input! (Not letter maybe)");
@@ -117,7 +120,7 @@ public class Main {
             CheckName(surname);
             CheckName(name);
             CheckName(patronymic);
-        } catch (CharConversionException exception) {
+        } catch (CharConversionException | StringIndexOutOfBoundsException exception) {
             System.out.println("\nEXCEPTION: " + exception.getMessage());
             return;
         }
