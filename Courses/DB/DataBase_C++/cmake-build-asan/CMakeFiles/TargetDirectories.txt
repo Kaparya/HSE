@@ -1,3 +1,0 @@
-/Users/kaparya/HSE/C++ projects/DB/Lab1/cmake-build-asan/CMakeFiles/Lab1.dir
-/Users/kaparya/HSE/C++ projects/DB/Lab1/cmake-build-asan/CMakeFiles/edit_cache.dir
-/Users/kaparya/HSE/C++ projects/DB/Lab1/cmake-build-asan/CMakeFiles/rebuild_cache.dir
