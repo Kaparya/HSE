@@ -6,8 +6,11 @@ __pycache__/
 cmake-build-debug/
 cmake-build-release/
 
+DB/
+
 Courses/C++Lectures/
 Courses/DB/
 Courses/ScienceGroup/
 Courses/Python/hse-python-2024/
 Courses/IAD/Old/
+Courses/Practice/
