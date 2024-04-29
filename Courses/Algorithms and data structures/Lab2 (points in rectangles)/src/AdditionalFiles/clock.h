@@ -29,6 +29,10 @@ public:
         }
         return result;
     }
+    auto result_milliseconds() const {
+        std::chrono::duration<double, std::ratio<1, 1000>> duration = log_finish_ - log_start_;
+        return duration.count();
+    }
 
 private:
     std::chrono::time_point<std::chrono::steady_clock> log_start_;

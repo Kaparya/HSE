@@ -5,6 +5,9 @@
 
 // Brute force is used to generate expected table for 2 other algorithms, due to its simplicity
 #include "../src/Algorithms/brute_force.h"
+#include "../src/AdditionalFiles/clock.h"
+
+#include "../src/constants.h"
 
 using FunctionPtr = std::vector<int> (*)(const std::vector<Rectangle> &, const std::vector<Point> &);
 
@@ -25,8 +28,8 @@ void NormalTest(FunctionPtr function) {
             {10, 4},
             {5,  5},
             {2,  10},
-            {1, 2},
-            {2, 1},
+            {1,  2},
+            {2,  1},
             {-1, -1}
     };
     std::vector<int> expected = {1, 0, 2, 3, 0, 0, 0, 0};
@@ -37,7 +40,7 @@ void NormalTest(FunctionPtr function) {
     for (size_t index = 0; index < expected.size(); ++index) {
         assert(result[index] == expected[index]);
     }
-    std::cout << "Normal test PASSED!\n";
+    // std::cout << "Normal test PASSED!\n";
 }
 
 void ZeroTest(FunctionPtr function) {
@@ -51,7 +54,7 @@ void ZeroTest(FunctionPtr function) {
     for (size_t index = 0; index < expected.size(); ++index) {
         assert(result[index] == expected[index]);
     }
-    std::cout << "Zero test PASSED!\n";
+    // std::cout << "Zero test PASSED!\n";
 }
 
 void NoRectanglesTest(FunctionPtr function) {
@@ -69,7 +72,7 @@ void NoRectanglesTest(FunctionPtr function) {
     for (size_t index = 0; index < expected.size(); ++index) {
         assert(result[index] == expected[index]);
     }
-    std::cout << "No rectangles test PASSED!\n";
+    // std::cout << "No rectangles test PASSED!\n";
 }
 
 void NoPointsTest(FunctionPtr function) {
@@ -88,7 +91,7 @@ void NoPointsTest(FunctionPtr function) {
     for (size_t index = 0; index < expected.size(); ++index) {
         assert(result[index] == expected[index]);
     }
-    std::cout << "No points test PASSED!\n";
+    // std::cout << "No points test PASSED!\n";
 }
 
 // -------------------------------------
@@ -104,8 +107,7 @@ void RunOrdinaryTests(FunctionPtr function) {
 // ============ Big tests ==============
 // =====================================
 
-void BigTest(FunctionPtr function) {
-    const int number = 1000;
+void BigTest(FunctionPtr function, int number) {
 
     std::vector<Rectangle> rectangles(number);
     for (int index = 0; index < number; ++index) {
@@ -121,21 +123,27 @@ void BigTest(FunctionPtr function) {
                           static_cast<int>(std::pow((2326309 * index), 31)) % (20 * number)});
     }
 
-    static std::vector<int> expected = BruteForce(rectangles, points);
+    std::vector<int> expected = BruteForce(rectangles, points);
 
+    Clock clock;
+    clock.start();
     auto result = function(rectangles, points);
+    clock.finish();
+#ifdef TIME_SCORING
+    std::cout << "Total time on a big test: " << clock.result() << " milliseconds" << '\n';
+#endif
 
     assert(result.size() == expected.size());
     for (size_t index = 0; index < expected.size(); ++index) {
         assert(result[index] == expected[index]);
     }
-    std::cout << "Big test PASSED!\n";
+    // std::cout << "Big test PASSED!\n";
 }
 
 // -------------------------------------
 
-void RunBigTests(FunctionPtr function) {
-    BigTest(function);
+void RunBigTests(FunctionPtr function, int number) {
+    BigTest(function, number);
 }
 
 // =====================================
@@ -151,8 +159,15 @@ void RandomTest(FunctionPtr function) {
 
     std::vector<Rectangle> rectangles(number);
     for (int index = 0; index < number; ++index) {
-        rectangles[index] = {{rand() % 100, rand() % 100},
-                             {rand() % 100, rand() % 100}};
+        int x1, y1, x2, y2;
+        x1 = rand() % 100;
+        y1 = rand() % 100;
+        x2 = rand() % 100;
+        y2 = rand() % 100;
+
+        Rectangle &new_rect = rectangles[index];
+        new_rect.l_d = {std::min(x1, x2), std::min(y1, y2)};
+        new_rect.r_u = {std::max(x1, x2), std::max(y1, y2)};
     }
 
     std::vector<Point> points(number);
@@ -160,7 +175,7 @@ void RandomTest(FunctionPtr function) {
         points[index] = {rand() % 150 - 25, rand() % 150 - 25};
     }
 
-    static std::vector<int> expected = BruteForce(rectangles, points);
+    std::vector<int> expected = BruteForce(rectangles, points);
 
     auto result = function(rectangles, points);
 
@@ -168,7 +183,7 @@ void RandomTest(FunctionPtr function) {
     for (size_t index = 0; index < expected.size(); ++index) {
         assert(result[index] == expected[index]);
     }
-    std::cout << "Random test PASSED!\n";
+    // std::cout << "Random test PASSED!\n";
 }
 
 // -------------------------------------

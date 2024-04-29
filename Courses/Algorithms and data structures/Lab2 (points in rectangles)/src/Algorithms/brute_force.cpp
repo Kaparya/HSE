@@ -1,9 +1,23 @@
 #include "brute_force.h"
+#include "../AdditionalFiles/clock.h"
+
+#include "../constants.h"
+
+int flag = 0;
 
 std::vector<int> BruteForce(const std::vector<Rectangle> &rectangles,
                             const std::vector<Point> &points) {
+    Clock clock;
+    clock.start();
     std::vector<int> result(points.size(), 0);
+    clock.finish();
+#ifdef TIME_SCORING
+    if (flag % 4 == 0) {
+        std::cout << "Preparation time:         " << clock.result() << " milliseconds\n";
+    }
+#endif
 
+    clock.start();
     for (size_t point_index = 0; point_index < points.size(); ++point_index) {
         for (auto &rectangle: rectangles) {
 
@@ -15,6 +29,13 @@ std::vector<int> BruteForce(const std::vector<Rectangle> &rectangles,
 
         }
     }
+    clock.finish();
+#ifdef TIME_SCORING
+    if (flag % 4 == 0) {
+        std::cout << "Search time per point:    " << clock.result() / points.size() << " milliseconds\n";
+    }
+    ++flag;
+#endif
 
     return result;
 }

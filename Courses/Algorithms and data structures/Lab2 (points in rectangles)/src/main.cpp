@@ -1,20 +1,52 @@
 #include <iostream>
+#include <iomanip>
 #include <vector>
 
 #include "Objects/Rectangle.h"
-#include "AdditionalFiles/clock.h"
 
 #include "Algorithms/brute_force.h"
 #include "Algorithms/map_algorithm.h"
+#include "Algorithms/persistent_st.h"
 
 #include "../tests/tests.h"
 
+#include "constants.h"
+
 int main() {
+
+#ifdef TESTING
+
+    RunOrdinaryTests(BruteForce);
+    RunBigTests(BruteForce);
+    RunRandomTests(BruteForce);
 
     RunOrdinaryTests(MapAlgorithm);
     RunBigTests(MapAlgorithm);
     RunRandomTests(MapAlgorithm);
-    return 0;
+
+    RunOrdinaryTests(PersistentSTAlgorithm);
+    RunBigTests(PersistentSTAlgorithm);
+    RunRandomTests(PersistentSTAlgorithm);
+
+#endif
+#ifdef TIME_SCORING
+
+    std::cout << std::fixed << std::setprecision(5);
+
+    for (int number: {10, 100, 1000}) {
+        std::cout << "\n============ N = " << number << " ===========\n";
+        std::cout << "----- Brute force algorithm -----\n";
+        RunBigTests(BruteForce, number);
+
+        std::cout << "--- Map construction algorithm ---\n";
+        RunBigTests(MapAlgorithm, number);
+
+        std::cout << "--- Persistent segment tree algorithm ---\n";
+        RunBigTests(PersistentSTAlgorithm, number);
+    }
+
+#endif
+#ifdef MANUAL_INPUT
 
     // Rectangles reading
     int number_of_rects;
@@ -45,12 +77,19 @@ int main() {
     // First algorithm - brute force
     Clock clock;
     clock.start();
-    auto result = BruteForce(rectangles, points);
+    auto result = PersistentSTAlgorithm(rectangles, points);
     clock.finish();
+    auto result_correct = BruteForce(rectangles, points);
+    for (auto i : result_correct) {
+        std::cout << i << ' ';
+    }
+    std::cout << '\n';
     for (auto i : result) {
         std::cout << i << ' ';
     }
     std::cout << clock;
+
+#endif
 
     return 0;
 }

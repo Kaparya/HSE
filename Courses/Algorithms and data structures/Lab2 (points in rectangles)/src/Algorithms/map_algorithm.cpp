@@ -1,14 +1,19 @@
 #include "map_algorithm.h"
+#include "../AdditionalFiles/clock.h"
+
+#include "../constants.h"
 
 #include <set>
 
 std::vector<int> MapAlgorithm(const std::vector<Rectangle> &rectangles,
                               const std::vector<Point> &points) {
 
+    Clock clock;
+    clock.start();
     std::vector<int> result(points.size(), 0);
 
     // Create set of distinct coordinates, then convert it to std::vector
-    std::set<size_t> distinct_x_coords, distinct_y_coords;
+    std::set<int> distinct_x_coords, distinct_y_coords;
     for (auto &rectangle: rectangles) {
         distinct_x_coords.insert(rectangle.r_u.x);
         distinct_x_coords.insert(rectangle.l_d.x);
@@ -16,12 +21,12 @@ std::vector<int> MapAlgorithm(const std::vector<Rectangle> &rectangles,
         distinct_y_coords.insert(rectangle.r_u.y);
         distinct_y_coords.insert(rectangle.l_d.y);
     }
-    std::vector<size_t> x_coords;
+    std::vector<int> x_coords;
     x_coords.reserve(distinct_x_coords.size());
     for (auto coord: distinct_x_coords) {
         x_coords.push_back(coord);
     }
-    std::vector<size_t> y_coords;
+    std::vector<int> y_coords;
     y_coords.reserve(distinct_y_coords.size());
     for (auto coord: distinct_y_coords) {
         y_coords.push_back(coord);
@@ -43,7 +48,12 @@ std::vector<int> MapAlgorithm(const std::vector<Rectangle> &rectangles,
             }
         }
     }
+    clock.finish();
+#ifdef TIME_SCORING
+    std::cout << "Preparation time:         " << clock.result() << " milliseconds\n";
+#endif
 
+    clock.start();
     // Find answers for points
     for (size_t point_index = 0; point_index < points.size(); ++point_index) {
 
@@ -75,6 +85,10 @@ std::vector<int> MapAlgorithm(const std::vector<Rectangle> &rectangles,
 
         result[point_index] = points_map[x][y];
     }
+    clock.finish();
+#ifdef TIME_SCORING
+    std::cout << "Search time per point:    " << clock.result() / points.size() << " milliseconds\n";
+#endif
 
     return result;
 }
