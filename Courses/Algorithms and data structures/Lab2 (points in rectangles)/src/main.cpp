@@ -2,6 +2,8 @@
 #include <iomanip>
 #include <vector>
 
+#include "constants.h"
+
 #include "Objects/Rectangle.h"
 
 #include "Algorithms/brute_force.h"
@@ -10,7 +12,7 @@
 
 #include "../tests/tests.h"
 
-#include "constants.h"
+std::ofstream output;
 
 int main() {
 
@@ -31,19 +33,27 @@ int main() {
 #endif
 #ifdef TIME_SCORING
 
-    std::cout << std::fixed << std::setprecision(5);
+    output.open("../Results/output_search_comparison.txt");
+    output << std::fixed << std::setprecision(10);
+    std::cout << std::fixed << std::setprecision(10);
 
-    for (int number: {10, 100, 1000}) {
-        std::cout << "\n============ N = " << number << " ===========\n";
-        std::cout << "----- Brute force algorithm -----\n";
-        RunBigTests(BruteForce, number);
+    for (int number_of_rectangles: {10, 1000}) {
+        for (int number_of_points: {10, 1000, 1000000}) {
+            std::cout << "\n============ N = " << number_of_rectangles << " M = " << number_of_points
+                      << " ===========\n";
+            std::cout << "----- Brute force algorithm -----\n";
+            output << "\n============ N = " << number_of_rectangles << " M = " << number_of_points << " ===========\n";
+            RunBigTests(BruteForce, number_of_rectangles, number_of_points);
 
-        std::cout << "--- Map construction algorithm ---\n";
-        RunBigTests(MapAlgorithm, number);
+            std::cout << "--- Map construction algorithm ---\n";
+            RunBigTests(MapAlgorithm, number_of_rectangles, number_of_points);
 
-        std::cout << "--- Persistent segment tree algorithm ---\n";
-        RunBigTests(PersistentSTAlgorithm, number);
+            std::cout << "--- Persistent segment tree algorithm ---\n";
+            RunBigTests(PersistentSTAlgorithm, number_of_rectangles, number_of_points);
+        }
     }
+
+    output.close();
 
 #endif
 #ifdef MANUAL_INPUT

@@ -5,6 +5,8 @@
 
 #include <set>
 
+extern std::ofstream output;
+
 std::vector<int> MapAlgorithm(const std::vector<Rectangle> &rectangles,
                               const std::vector<Point> &points) {
 
@@ -50,6 +52,7 @@ std::vector<int> MapAlgorithm(const std::vector<Rectangle> &rectangles,
     }
     clock.finish();
 #ifdef TIME_SCORING
+    output << clock.result() << ' ';
     std::cout << "Preparation time:         " << clock.result() << " milliseconds\n";
 #endif
 
@@ -87,6 +90,7 @@ std::vector<int> MapAlgorithm(const std::vector<Rectangle> &rectangles,
     }
     clock.finish();
 #ifdef TIME_SCORING
+    output << clock.result() / points.size() << ' ';
     std::cout << "Search time per point:    " << clock.result() / points.size() << " milliseconds\n";
 #endif
 

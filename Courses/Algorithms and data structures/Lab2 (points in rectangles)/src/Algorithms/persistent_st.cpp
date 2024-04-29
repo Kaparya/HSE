@@ -7,6 +7,7 @@
 #include <memory>
 #include <algorithm>
 
+extern std::ofstream output;
 
 struct CoordsStorage {
     int x = 0;
@@ -173,6 +174,7 @@ std::vector<int> PersistentSTAlgorithm(const std::vector<Rectangle> &rectangles,
     }
     clock.finish();
 #ifdef TIME_SCORING
+    output << clock.result() << ' ';
     std::cout << "Preparation time:         " << clock.result() << " milliseconds\n";
 #endif
 
@@ -202,6 +204,7 @@ std::vector<int> PersistentSTAlgorithm(const std::vector<Rectangle> &rectangles,
     }
     clock.finish();
 #ifdef TIME_SCORING
+    output << clock.result() / points.size() << ' ';
     std::cout << "Search time per point:    " << clock.result() / points.size() << " milliseconds\n";
 #endif
 

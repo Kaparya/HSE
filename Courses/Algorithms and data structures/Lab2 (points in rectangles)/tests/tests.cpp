@@ -9,6 +9,8 @@
 
 #include "../src/constants.h"
 
+extern std::ofstream output;
+
 using FunctionPtr = std::vector<int> (*)(const std::vector<Rectangle> &, const std::vector<Point> &);
 
 // =====================================
@@ -107,20 +109,20 @@ void RunOrdinaryTests(FunctionPtr function) {
 // ============ Big tests ==============
 // =====================================
 
-void BigTest(FunctionPtr function, int number) {
+void BigTest(FunctionPtr function, int number_of_rectangles, int number_of_points) {
 
-    std::vector<Rectangle> rectangles(number);
-    for (int index = 0; index < number; ++index) {
+    std::vector<Rectangle> rectangles(number_of_rectangles);
+    for (int index = 0; index < number_of_rectangles; ++index) {
         rectangles[index] = {{10 * index,                10 * index},
-                             {10 * (2 * number - index), 10 * (2 * number - index)}};
+                             {10 * (2 * number_of_rectangles - index), 10 * (2 * number_of_rectangles - index)}};
     }
 
     std::vector<Point> points = {{-1,                -1},
                                  {-1,                1},
-                                 {10 * (2 * number), 10 * (2 * number)}};
-    for (int index = 0; index < number; ++index) {
-        points.push_back({static_cast<int>(std::pow((11317 * index), 31)) % (20 * number),
-                          static_cast<int>(std::pow((2326309 * index), 31)) % (20 * number)});
+                                 {10 * (2 * number_of_rectangles), 10 * (2 * number_of_rectangles)}};
+    for (int index = 0; index < number_of_points; ++index) {
+        points.push_back({static_cast<int>(std::pow((11317 * index), 31)) % (20 * number_of_points),
+                          static_cast<int>(std::pow((2326309 * index), 31)) % (20 * number_of_points)});
     }
 
     std::vector<int> expected = BruteForce(rectangles, points);
@@ -130,6 +132,7 @@ void BigTest(FunctionPtr function, int number) {
     auto result = function(rectangles, points);
     clock.finish();
 #ifdef TIME_SCORING
+    output << clock.result() << '\n';
     std::cout << "Total time on a big test: " << clock.result() << " milliseconds" << '\n';
 #endif
 
@@ -142,8 +145,8 @@ void BigTest(FunctionPtr function, int number) {
 
 // -------------------------------------
 
-void RunBigTests(FunctionPtr function, int number) {
-    BigTest(function, number);
+void RunBigTests(FunctionPtr function, int number_of_rectangles, int number_of_points) {
+    BigTest(function, number_of_rectangles, number_of_points);
 }
 
 // =====================================

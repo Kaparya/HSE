@@ -4,6 +4,7 @@
 #include "../constants.h"
 
 int flag = 0;
+extern std::ofstream output;
 
 std::vector<int> BruteForce(const std::vector<Rectangle> &rectangles,
                             const std::vector<Point> &points) {
@@ -13,6 +14,7 @@ std::vector<int> BruteForce(const std::vector<Rectangle> &rectangles,
     clock.finish();
 #ifdef TIME_SCORING
     if (flag % 4 == 0) {
+        output << clock.result() << ' ';
         std::cout << "Preparation time:         " << clock.result() << " milliseconds\n";
     }
 #endif
@@ -32,6 +34,7 @@ std::vector<int> BruteForce(const std::vector<Rectangle> &rectangles,
     clock.finish();
 #ifdef TIME_SCORING
     if (flag % 4 == 0) {
+        output << clock.result() / points.size() << ' ';
         std::cout << "Search time per point:    " << clock.result() / points.size() << " milliseconds\n";
     }
     ++flag;

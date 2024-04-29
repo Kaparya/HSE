@@ -5,4 +5,6 @@
 //#define TESTING
 #define TIME_SCORING
 
+#include <fstream>
+
 #endif
