@@ -111,30 +111,37 @@ void RunOrdinaryTests(FunctionPtr function) {
 
 void BigTest(FunctionPtr function, int number_of_rectangles, int number_of_points) {
 
+    std::srand(0);
+
     std::vector<Rectangle> rectangles(number_of_rectangles);
     for (int index = 0; index < number_of_rectangles; ++index) {
-        rectangles[index] = {{10 * index,                10 * index},
-                             {10 * (2 * number_of_rectangles - index), 10 * (2 * number_of_rectangles - index)}};
+        if (2 * number_of_rectangles - index > 0) {
+            rectangles[index] = {{10 * index,                              10 * index},
+                                 {10 * (2 * number_of_rectangles - index), 10 * (2 * number_of_rectangles - index)}};
+        } else {
+            int x1, y1, x2, y2;
+            x1 = rand() % 100;
+            y1 = rand() % 100;
+            x2 = rand() % 100;
+            y2 = rand() % 100;
+
+            Rectangle &new_rect = rectangles[index];
+            new_rect.l_d = {std::min(x1, x2), std::min(y1, y2)};
+            new_rect.r_u = {std::max(x1, x2), std::max(y1, y2)};
+        }
     }
 
     std::vector<Point> points = {{-1,                -1},
                                  {-1,                1},
                                  {10 * (2 * number_of_rectangles), 10 * (2 * number_of_rectangles)}};
     for (int index = 0; index < number_of_points; ++index) {
-        points.push_back({static_cast<int>(std::pow((11317 * index), 31)) % (20 * number_of_points),
-                          static_cast<int>(std::pow((2326309 * index), 31)) % (20 * number_of_points)});
+        points.push_back({static_cast<int>(std::pow((11317 * index), 31)) % (20 * number_of_rectangles),
+                          static_cast<int>(std::pow((2326309 * index), 31)) % (20 * number_of_rectangles)});
     }
 
     std::vector<int> expected = BruteForce(rectangles, points);
 
-    Clock clock;
-    clock.start();
     auto result = function(rectangles, points);
-    clock.finish();
-#ifdef TIME_SCORING
-    output << clock.result() << '\n';
-    std::cout << "Total time on a big test: " << clock.result() << " milliseconds" << '\n';
-#endif
 
     assert(result.size() == expected.size());
     for (size_t index = 0; index < expected.size(); ++index) {

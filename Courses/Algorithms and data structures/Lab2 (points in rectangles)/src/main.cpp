@@ -1,8 +1,11 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <string>
 
 #include "constants.h"
+
+#include "AdditionalFiles/clock.h"
 
 #include "Objects/Rectangle.h"
 
@@ -16,41 +19,46 @@ std::ofstream output;
 
 int main() {
 
+    // All defines in file constants.h
 #ifdef TESTING
 
     RunOrdinaryTests(BruteForce);
     RunBigTests(BruteForce);
     RunRandomTests(BruteForce);
+    std::cout << "Brute: All tests PASSED!\n";
 
     RunOrdinaryTests(MapAlgorithm);
     RunBigTests(MapAlgorithm);
     RunRandomTests(MapAlgorithm);
+    std::cout << "Map:   All tests PASSED!\n";
 
     RunOrdinaryTests(PersistentSTAlgorithm);
     RunBigTests(PersistentSTAlgorithm);
     RunRandomTests(PersistentSTAlgorithm);
+    std::cout << "Tree:  All tests PASSED!\n";
 
 #endif
 #ifdef TIME_SCORING
 
-    output.open("../Results/output_search_comparison.txt");
+    int number_of_points = 10;
+    output.open("../Description/Results/graph_building_total1_" + std::to_string(number_of_points) + ".txt");
     output << std::fixed << std::setprecision(10);
     std::cout << std::fixed << std::setprecision(10);
 
-    for (int number_of_rectangles: {10, 1000}) {
-        for (int number_of_points: {10, 1000, 1000000}) {
-            std::cout << "\n============ N = " << number_of_rectangles << " M = " << number_of_points
-                      << " ===========\n";
-            std::cout << "----- Brute force algorithm -----\n";
-            output << "\n============ N = " << number_of_rectangles << " M = " << number_of_points << " ===========\n";
-            RunBigTests(BruteForce, number_of_rectangles, number_of_points);
+    for (int number_of_rectangles = 10; number_of_rectangles <= 4010; number_of_rectangles += 500) {
+        //for (int number_of_points: {10, 1000, 1000000}) {
+        std::cout << "\n============ N = " << number_of_rectangles << " M = " << number_of_points
+                  << " ===========\n";
+        std::cout << "----- Brute force algorithm -----\n";
+        output << number_of_rectangles << "\n";
+        RunBigTests(BruteForce, number_of_rectangles, number_of_points);
 
-            std::cout << "--- Map construction algorithm ---\n";
-            RunBigTests(MapAlgorithm, number_of_rectangles, number_of_points);
+        std::cout << "--- Map construction algorithm ---\n";
+        RunBigTests(MapAlgorithm, number_of_rectangles, number_of_points);
 
-            std::cout << "--- Persistent segment tree algorithm ---\n";
-            RunBigTests(PersistentSTAlgorithm, number_of_rectangles, number_of_points);
-        }
+        std::cout << "--- Persistent segment tree algorithm ---\n";
+        RunBigTests(PersistentSTAlgorithm, number_of_rectangles, number_of_points);
+        //}
     }
 
     output.close();
@@ -84,20 +92,23 @@ int main() {
         points[index] = {x, y};
     }
 
-    // First algorithm - brute force
-    Clock clock;
-    clock.start();
-    auto result = PersistentSTAlgorithm(rectangles, points);
-    clock.finish();
-    auto result_correct = BruteForce(rectangles, points);
-    for (auto i : result_correct) {
+    auto result_brute = BruteForce(rectangles, points);
+    auto result_map = MapAlgorithm(rectangles, points);
+    auto result_tree = PersistentSTAlgorithm(rectangles, points);
+    std::cout << "Brute: ";
+    for (auto i : result_brute) {
         std::cout << i << ' ';
     }
     std::cout << '\n';
-    for (auto i : result) {
+    std::cout << "Map:   ";
+    for (auto i : result_map) {
         std::cout << i << ' ';
     }
-    std::cout << clock;
+    std::cout << '\n';
+    std::cout << "Tree:  ";
+    for (auto i : result_tree) {
+        std::cout << i << ' ';
+    }
 
 #endif
 

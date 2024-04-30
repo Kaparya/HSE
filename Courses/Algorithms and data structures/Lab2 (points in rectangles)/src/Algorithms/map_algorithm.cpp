@@ -10,7 +10,8 @@ extern std::ofstream output;
 std::vector<int> MapAlgorithm(const std::vector<Rectangle> &rectangles,
                               const std::vector<Point> &points) {
 
-    Clock clock;
+    Clock clock, total;
+    total.start();
     clock.start();
     std::vector<int> result(points.size(), 0);
 
@@ -51,11 +52,14 @@ std::vector<int> MapAlgorithm(const std::vector<Rectangle> &rectangles,
         }
     }
     clock.finish();
+    total.finish();
+    auto total_result = total.result();
 #ifdef TIME_SCORING
     output << clock.result() << ' ';
     std::cout << "Preparation time:         " << clock.result() << " milliseconds\n";
 #endif
 
+    total.start();
     clock.start();
     // Find answers for points
     for (size_t point_index = 0; point_index < points.size(); ++point_index) {
@@ -89,9 +93,13 @@ std::vector<int> MapAlgorithm(const std::vector<Rectangle> &rectangles,
         result[point_index] = points_map[x][y];
     }
     clock.finish();
+    total.finish();
+    total_result += total.result();
 #ifdef TIME_SCORING
     output << clock.result() / points.size() << ' ';
     std::cout << "Search time per point:    " << clock.result() / points.size() << " milliseconds\n";
+    output << total_result << '\n';
+    std::cout << "Total time on a big test: " << total_result << " milliseconds" << '\n';
 #endif
 
     return result;

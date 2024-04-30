@@ -2,8 +2,8 @@
 #define CONSTANTS_H
 
 //#define MANUAL_INPUT
-//#define TESTING
-#define TIME_SCORING
+#define TESTING
+//#define TIME_SCORING
 
 #include <fstream>
 

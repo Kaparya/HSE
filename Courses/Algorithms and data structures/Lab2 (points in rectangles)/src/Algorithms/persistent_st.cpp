@@ -51,7 +51,7 @@ struct Node {
     }
 };
 
-void ModifyTree(const std::shared_ptr<Node> &current, const std::shared_ptr<Node> &previous,
+inline void ModifyTree(const std::shared_ptr<Node> &current, const std::shared_ptr<Node> &previous,
                 int from, int to, int value) {
     if (!previous || from > to) {
         return;
@@ -78,7 +78,7 @@ void ModifyTree(const std::shared_ptr<Node> &current, const std::shared_ptr<Node
     }
 }
 
-int FindAnswer(const std::shared_ptr<Node> &current, int y_coord) {
+inline int FindAnswer(const std::shared_ptr<Node> &current, int y_coord) {
     if (!current) {
         return 0;
     }
@@ -93,7 +93,8 @@ int FindAnswer(const std::shared_ptr<Node> &current, int y_coord) {
 
 std::vector<int> PersistentSTAlgorithm(const std::vector<Rectangle> &rectangles,
                                        const std::vector<Point> &points) {
-    Clock clock;
+    Clock clock, total;
+    total.start();
     clock.start();
     // Create set of distinct coordinates, then convert it to std::vector
     std::set<int> distinct_x_coords;
@@ -170,14 +171,17 @@ std::vector<int> PersistentSTAlgorithm(const std::vector<Rectangle> &rectangles,
             ++index;
         }
 
-        roots_by_x.emplace_back(prev_root);
+        roots_by_x.push_back(prev_root);
     }
     clock.finish();
+    total.finish();
+    auto total_result = total.result();
 #ifdef TIME_SCORING
     output << clock.result() << ' ';
     std::cout << "Preparation time:         " << clock.result() << " milliseconds\n";
 #endif
 
+    total.start();
     clock.start();
     // Find answers for points
     std::vector<int> result(points.size(), 0);
@@ -203,9 +207,13 @@ std::vector<int> PersistentSTAlgorithm(const std::vector<Rectangle> &rectangles,
         }
     }
     clock.finish();
+    total.finish();
+    total_result += total.result();
 #ifdef TIME_SCORING
     output << clock.result() / points.size() << ' ';
     std::cout << "Search time per point:    " << clock.result() / points.size() << " milliseconds\n";
+    output << total_result << '\n';
+    std::cout << "Total time on a big test: " << total_result << " milliseconds" << '\n';
 #endif
 
     return result;

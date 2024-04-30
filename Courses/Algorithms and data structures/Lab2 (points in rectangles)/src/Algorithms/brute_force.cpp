@@ -8,10 +8,13 @@ extern std::ofstream output;
 
 std::vector<int> BruteForce(const std::vector<Rectangle> &rectangles,
                             const std::vector<Point> &points) {
-    Clock clock;
+    Clock clock, total;
+    total.start();
     clock.start();
     std::vector<int> result(points.size(), 0);
     clock.finish();
+    total.finish();
+    auto total_result = total.result();
 #ifdef TIME_SCORING
     if (flag % 4 == 0) {
         output << clock.result() << ' ';
@@ -19,6 +22,7 @@ std::vector<int> BruteForce(const std::vector<Rectangle> &rectangles,
     }
 #endif
 
+    total.start();
     clock.start();
     for (size_t point_index = 0; point_index < points.size(); ++point_index) {
         for (auto &rectangle: rectangles) {
@@ -32,10 +36,14 @@ std::vector<int> BruteForce(const std::vector<Rectangle> &rectangles,
         }
     }
     clock.finish();
+    total.finish();
+    total_result += total.result();
 #ifdef TIME_SCORING
     if (flag % 4 == 0) {
         output << clock.result() / points.size() << ' ';
         std::cout << "Search time per point:    " << clock.result() / points.size() << " milliseconds\n";
+        output << total_result << '\n';
+        std::cout << "Total time on a big test: " << total_result << " milliseconds" << '\n';
     }
     ++flag;
 #endif
