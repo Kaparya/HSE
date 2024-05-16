@@ -30,7 +30,7 @@ public class CallGenerator extends Thread {
             updatedFloor.add(newCall);
             building.set(fromFloor, updatedFloor);
 
-            int sleepTime = rnd.nextInt(avgCallTime * 1000 / 4) + avgCallTime * 1000;
+            int sleepTime = rnd.nextInt(avgCallTime / 4) + avgCallTime;
             try {
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {

@@ -17,7 +17,9 @@ public class LiftThread extends Thread {
 
     public void run() {
         while (programRun.get()) {
+
             moveLift();
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -33,7 +35,7 @@ public class LiftThread extends Thread {
         for (Call call : lift.people) {
             if (call.destinationFloor == lift.currentFloor) {
                 try {
-                    boolean help = people.remove(call);
+                    people.remove(call);
                 } catch (Exception exception) {
                     System.out.println(exception.getMessage());
                     System.exit(-7);
@@ -80,7 +82,7 @@ public class LiftThread extends Thread {
 
         for (Call call : lift.people) {
             try {
-                boolean help = current.remove(call);
+                current.remove(call);
             } catch (Exception exception) {
                 System.out.println(exception.getMessage());
                 System.exit(-7);
@@ -98,7 +100,8 @@ public class LiftThread extends Thread {
                 result[floor] = -1;
                 continue;
             }
-            result[floor] = MAX_FLOOR + 10 - abs(lift.currentFloor - floor);
+            result[floor] = MAX_FLOOR - abs(lift.currentFloor - floor);
+            result[floor] += currentPeople.size() * 4;
         }
 
         return result;
@@ -116,6 +119,9 @@ public class LiftThread extends Thread {
             }
         }
         lift.destinationFloor = maxFloor;
+        if (maxCoefficient == -1) {
+            return;
+        }
         BlockingQueue<Call> tmp = building.get(maxFloor);
         if (!tmp.isEmpty()) {
             tmp.peek().taken = true;
@@ -126,11 +132,13 @@ public class LiftThread extends Thread {
     private void moveLift() {
 
         if (goingToNewFloor) {
-            BlockingQueue<Call> destinationFloor = building.get(lift.destinationFloor);
-            if (lift.currentFloor == lift.destinationFloor ||
-                    destinationFloor.isEmpty() ||
-                    destinationFloor.peek().taken) {
+            if (lift.currentFloor == lift.destinationFloor) {
                 goingToNewFloor = false;
+            } else {
+                BlockingQueue<Call> destinationFloor = building.get(lift.destinationFloor);
+                if (destinationFloor.isEmpty() || !destinationFloor.peek().taken) {
+                    goingToNewFloor = false;
+                }
             }
         }
 
@@ -152,7 +160,7 @@ public class LiftThread extends Thread {
         findNewDestination();
     }
 
-    private boolean goingToNewFloor = false;
+    public boolean goingToNewFloor = false;
     private AtomicReferenceArray<BlockingQueue<Call>> building;
     private AtomicBoolean programRun;
     public Lift lift;

@@ -8,6 +8,7 @@ class Main {
     private static void printToConsole(
             LiftThread firstLiftThread,
             LiftThread secondLiftThread,
+            LiftThread thirdLiftThread,
             AtomicReferenceArray<BlockingQueue<Call>> building,
             int MAX_FLOOR)
     {
@@ -16,7 +17,8 @@ class Main {
 
         int firstLiftFloor = firstLiftThread.lift.currentFloor;
         int secondLiftFloor = secondLiftThread.lift.currentFloor;
-        System.out.println("  /---\\");
+        int thirdLiftFloor = thirdLiftThread.lift.currentFloor;
+        System.out.println("  /-------\\");
 
         for (int floor = MAX_FLOOR; floor >= 1; --floor) {
             if ((floor - 1) % 3 == 0) {
@@ -24,29 +26,54 @@ class Main {
             } else {
                 System.out.print("  ");
             }
-            if (floor == firstLiftFloor && floor == secondLiftFloor) {
-                System.out.print("|#|#|");
-            } else if (floor == firstLiftFloor) {
-                System.out.print("|#| |");
-            } else if (floor == secondLiftFloor) {
-                System.out.print("| |#|");
+            if (floor == firstLiftFloor) {
+                System.out.print("|#|");
             } else {
-                System.out.print("| | |");
+                System.out.print("| |");
             }
-            BlockingQueue<Call> people = building.get(floor);
-            for (Call current : people) {
+            if (floor == secondLiftFloor) {
+                System.out.print("|#|");
+            } else {
+                System.out.print("| |");
+            }
+            if (floor == thirdLiftFloor) {
+                System.out.print("|#|");
+            } else {
+                System.out.print("| |");
+            }
+
+
+            for (Call current : building.get(floor)) {
                 System.out.print(" (" + current.fromFloor + "->" + current.destinationFloor + ")");
             }
             System.out.println();
         }
 
-        System.out.println("  \\---/");
-        System.out.println("\nFirst lift:");
+        System.out.println("  \\-------/");
+        System.out.print("\nFirst lift:");
+        if (firstLiftThread.goingToNewFloor) {
+            System.out.print(firstLiftThread.lift.destinationFloor);
+        }
+        System.out.println();
         for (Call call : firstLiftThread.lift.people) {
             System.out.print("(" + call.fromFloor + "->" + call.destinationFloor + ") ");
         }
-        System.out.println("\n\nSecond lift:");
+
+        System.out.print("\n\nSecond lift:");
+        if (secondLiftThread.goingToNewFloor) {
+            System.out.print(secondLiftThread.lift.destinationFloor);
+        }
+        System.out.println();
         for (Call call : secondLiftThread.lift.people) {
+            System.out.print("(" + call.fromFloor + "->" + call.destinationFloor + ") ");
+        }
+
+        System.out.print("\n\nThird lift:");
+        if (thirdLiftThread.goingToNewFloor) {
+            System.out.print(thirdLiftThread.lift.destinationFloor);
+        }
+        System.out.println();
+        for (Call call : thirdLiftThread.lift.people) {
             System.out.print("(" + call.fromFloor + "->" + call.destinationFloor + ") ");
         }
         System.out.flush();
@@ -56,7 +83,7 @@ class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Input how long you want to do this experiment (in seconds): ");
         int MAX_TIME = scanner.nextInt() * 1000;
-        System.out.print("Input call generation average time (in seconds): ");
+        System.out.print("Input call generation average time (in milliseconds): ");
         int avgCallTime = scanner.nextInt();
         int MAX_FLOOR = 10;
 
@@ -84,12 +111,13 @@ class Main {
             printToConsole(
                     firstLiftThread,
                     secondLiftThread,
+                    thirdLiftThread,
                     building,
                     MAX_FLOOR
             );
 
             try {
-                Thread.sleep(150);
+                Thread.sleep(99);
             } catch (InterruptedException exception) {
                 System.out.println(exception.getMessage());
                 System.exit(-1);
