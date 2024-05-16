@@ -2,7 +2,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class Lift {
-
     public Lift(int number, int currentFloor) {
         this.number = number;
         this.currentFloor = currentFloor;

@@ -45,7 +45,6 @@ public class LiftThread extends Thread {
     }
 
     private void takeNewPeopleOnCurrentFloor() {
-
         BlockingQueue<Call> current = building.get(lift.currentFloor);
         if (current.isEmpty()) {
             return;

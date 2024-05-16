@@ -5,6 +5,52 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 class Main {
+    private static void printToConsole(
+            LiftThread firstLiftThread,
+            LiftThread secondLiftThread,
+            AtomicReferenceArray<BlockingQueue<Call>> building,
+            int MAX_FLOOR)
+    {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+
+        int firstLiftFloor = firstLiftThread.lift.currentFloor;
+        int secondLiftFloor = secondLiftThread.lift.currentFloor;
+        System.out.println("  /---\\");
+
+        for (int floor = MAX_FLOOR; floor >= 1; --floor) {
+            if ((floor - 1) % 3 == 0) {
+                System.out.printf("%2d", floor);
+            } else {
+                System.out.print("  ");
+            }
+            if (floor == firstLiftFloor && floor == secondLiftFloor) {
+                System.out.print("|#|#|");
+            } else if (floor == firstLiftFloor) {
+                System.out.print("|#| |");
+            } else if (floor == secondLiftFloor) {
+                System.out.print("| |#|");
+            } else {
+                System.out.print("| | |");
+            }
+            BlockingQueue<Call> people = building.get(floor);
+            for (Call current : people) {
+                System.out.print(" (" + current.fromFloor + "->" + current.destinationFloor + ")");
+            }
+            System.out.println();
+        }
+
+        System.out.println("  \\---/");
+        System.out.println("\nFirst lift:");
+        for (Call call : firstLiftThread.lift.people) {
+            System.out.print("(" + call.fromFloor + "->" + call.destinationFloor + ") ");
+        }
+        System.out.println("\n\nSecond lift:");
+        for (Call call : secondLiftThread.lift.people) {
+            System.out.print("(" + call.fromFloor + "->" + call.destinationFloor + ") ");
+        }
+        System.out.flush();
+    }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -24,49 +70,23 @@ class Main {
         CallGenerator callGenerator = new CallGenerator(programRun, avgCallTime, MAX_FLOOR, building);
         LiftThread firstLiftThread = new LiftThread(building, programRun, new Lift(1, 1), MAX_FLOOR);
         LiftThread secondLiftThread = new LiftThread(building, programRun, new Lift(2, MAX_FLOOR), MAX_FLOOR);
+        LiftThread thirdLiftThread = new LiftThread(building, programRun, new Lift(2, MAX_FLOOR / 2), MAX_FLOOR);
 
         long startTime = System.currentTimeMillis();
 
         callGenerator.start();
         firstLiftThread.start();
         secondLiftThread.start();
+        thirdLiftThread.start();
 
         while (System.currentTimeMillis() - startTime < MAX_TIME) {
-            System.out.print("\033[H\033[2J");
-            System.out.flush();
 
-            int firstLiftFloor = firstLiftThread.lift.currentFloor;
-            int secondLiftFloor = secondLiftThread.lift.currentFloor;
-            System.out.println("/---\\");
-
-            for (int floor = MAX_FLOOR; floor >= 1; --floor) {
-                if (floor == firstLiftFloor && floor == secondLiftFloor) {
-                    System.out.print("|#|#|");
-                } else if (floor == firstLiftFloor) {
-                    System.out.print("|#| |");
-                } else if (floor == secondLiftFloor) {
-                    System.out.print("| |#|");
-                } else {
-                    System.out.print("| | |");
-                }
-                BlockingQueue<Call> people = building.get(floor);
-                for (Call current : people) {
-                    System.out.print(" (" + current.fromFloor + "->" + current.destinationFloor + ")");
-                }
-                System.out.println();
-            }
-
-            System.out.println("\\---/");
-            System.out.println("\nFirst lift:");
-            for (Call call : firstLiftThread.lift.people) {
-                System.out.print("(" + call.fromFloor + "->" + call.destinationFloor + ") ");
-            }
-            System.out.println("\n\nSecond lift:");
-            for (Call call : secondLiftThread.lift.people) {
-                System.out.print("(" + call.fromFloor + "->" + call.destinationFloor + ") ");
-            }
-            System.out.flush();
-
+            printToConsole(
+                    firstLiftThread,
+                    secondLiftThread,
+                    building,
+                    MAX_FLOOR
+            );
 
             try {
                 Thread.sleep(150);

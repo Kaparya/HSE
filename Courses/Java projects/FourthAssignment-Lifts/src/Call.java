@@ -1,5 +1,5 @@
-public class Call {
 
+public class Call {
     public Call(int fromFloor, int destinationFloor) {
         this.fromFloor = fromFloor;
         this.destinationFloor = destinationFloor;

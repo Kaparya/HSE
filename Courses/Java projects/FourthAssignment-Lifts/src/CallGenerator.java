@@ -4,7 +4,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class CallGenerator extends Thread {
-
     public CallGenerator(AtomicBoolean programRun,
                          int avgCallTime,
                          int MAX_FLOOR,
@@ -14,6 +13,7 @@ public class CallGenerator extends Thread {
         this.MAX_FLOOR = MAX_FLOOR;
         this.building = building;
     }
+
     public void run() {
 
         Random rnd = new Random(28);
