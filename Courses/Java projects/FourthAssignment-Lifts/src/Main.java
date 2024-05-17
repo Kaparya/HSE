@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -10,8 +12,7 @@ class Main {
             LiftThread secondLiftThread,
             LiftThread thirdLiftThread,
             AtomicReferenceArray<BlockingQueue<Call>> building,
-            int MAX_FLOOR)
-    {
+            int MAX_FLOOR) {
         System.out.print("\033[H\033[2J");
         System.out.flush();
 
@@ -80,12 +81,15 @@ class Main {
     }
 
     public static void main(String[] args) {
+
+        int MAX_FLOOR = 10;
+
         Scanner scanner = new Scanner(System.in);
         System.out.print("Input how long you want to do this experiment (in seconds): ");
         int MAX_TIME = scanner.nextInt() * 1000;
         System.out.print("Input call generation average time (in milliseconds): ");
         int avgCallTime = scanner.nextInt();
-        int MAX_FLOOR = 10;
+        scanner.close();
 
         AtomicBoolean programRun = new AtomicBoolean(true);
         AtomicReferenceArray<BlockingQueue<Call>> building =
@@ -98,6 +102,29 @@ class Main {
         LiftThread firstLiftThread = new LiftThread(building, programRun, new Lift(1, 1), MAX_FLOOR);
         LiftThread secondLiftThread = new LiftThread(building, programRun, new Lift(2, MAX_FLOOR), MAX_FLOOR);
         LiftThread thirdLiftThread = new LiftThread(building, programRun, new Lift(2, MAX_FLOOR / 2), MAX_FLOOR);
+
+
+        JFrame window = new JFrame();
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setResizable(false);
+        window.setTitle("Async Elevators");
+
+        LiftsPanel liftsPanel = new LiftsPanel(MAX_FLOOR);
+        window.add(liftsPanel);
+        window.pack();
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
+        int[] peopleOnFloor = new int[MAX_FLOOR + 1];
+        int[] peopleInLift = new int[3];
+        int[] peopleOut = new int[3];
+        liftsPanel.repaint(
+                firstLiftThread.lift.currentFloor,
+                secondLiftThread.lift.currentFloor,
+                thirdLiftThread.lift.currentFloor,
+                peopleOnFloor,
+                peopleInLift,
+                peopleOut
+        );
 
         long startTime = System.currentTimeMillis();
 
@@ -116,8 +143,32 @@ class Main {
                     MAX_FLOOR
             );
 
+            for (int floor = 1; floor <= MAX_FLOOR; ++floor) {
+                peopleOnFloor[floor] = building.get(floor).size();
+            }
+
+            peopleOut = new int[]{
+                    peopleInLift[0] - firstLiftThread.lift.people.size(),
+                    peopleInLift[1] - secondLiftThread.lift.people.size(),
+                    peopleInLift[2] - thirdLiftThread.lift.people.size()
+            };
+            peopleInLift = new int[]{
+                    firstLiftThread.lift.people.size(),
+                    secondLiftThread.lift.people.size(),
+                    thirdLiftThread.lift.people.size()
+            };
+
+            liftsPanel.repaint(
+                    firstLiftThread.lift.currentFloor,
+                    secondLiftThread.lift.currentFloor,
+                    thirdLiftThread.lift.currentFloor,
+                    peopleOnFloor,
+                    peopleInLift,
+                    peopleOut
+            );
+
             try {
-                Thread.sleep(99);
+                Thread.sleep(499);
             } catch (InterruptedException exception) {
                 System.out.println(exception.getMessage());
                 System.exit(-1);
@@ -133,6 +184,5 @@ class Main {
         } catch (InterruptedException exception) {
             System.out.println("EXCEPTION: " + exception.getMessage());
         }
-        scanner.close();
     }
 }
