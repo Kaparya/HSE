@@ -2,13 +2,9 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 
-public class LiftsPanel extends JPanel {
+public class LiftsWindow extends JPanel {
     final int scale = 15;
     final int maxScreenColumn = 30;
     int maxScreenRow = 52;
@@ -19,7 +15,7 @@ public class LiftsPanel extends JPanel {
     private BufferedImage humanImage = null;
     private BufferedImage humanImageFlipped = null;
 
-    public LiftsPanel(int MAX_FLOOR) {
+    public LiftsWindow(int MAX_FLOOR) {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
@@ -27,21 +23,15 @@ public class LiftsPanel extends JPanel {
         this.MAX_FLOOR = MAX_FLOOR;
         this.maxScreenRow = MAX_FLOOR * 5 + 2;
         try {
-//            this.humanImage = ImageIO.read(new File("./src/res/images/human.png"));
-//            this.humanImageFlipped = ImageIO.read(new File("./src/res/images/humanFlipped.png"));
-            try {
-                this.humanImage = ImageIO.read(new URI("https://github.com/Kaparya/HSE/raw/main/Courses/Java%20projects/FourthAssignment-Lifts/src/res/images/human.png").toURL());
-                this.humanImageFlipped = ImageIO.read(new URI("https://github.com/Kaparya/HSE/raw/main/Courses/Java%20projects/FourthAssignment-Lifts/src/res/images/humanFlipped.png").toURL());
-            } catch (URISyntaxException e) {
-                System.out.println(e.getMessage());
-                System.exit(-9);
-            }
-        } catch (IOException e) {
+            this.humanImage = ImageIO.read(new URI("https://github.com/Kaparya/HSE/raw/main/Courses/Java%20projects/FourthAssignment-Lifts/src/res/images/human.png").toURL());
+            this.humanImageFlipped = ImageIO.read(new URI("https://github.com/Kaparya/HSE/raw/main/Courses/Java%20projects/FourthAssignment-Lifts/src/res/images/humanFlipped.png").toURL());
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             System.exit(-8);
         }
     }
 
+    // Get data to update window
     public void repaint(
             int firstLiftFloor,
             int secondLiftFloor,
@@ -59,11 +49,13 @@ public class LiftsPanel extends JPanel {
         super.repaint();
     }
 
+    // Update Window
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
 
+        // Draw background
         g2.setColor(Color.CYAN);
         g2.fillRect(scale * 20, scale, scale * 10, scale * 50);
 
@@ -79,6 +71,7 @@ public class LiftsPanel extends JPanel {
             g2.fillRect(scale * 20, scale * i, scale * 10, scale);
         }
 
+        // Draw lifts
         g2.setColor(Color.DARK_GRAY);
         g2.fillRect(scale, (liftFloors[0] * 5 + 1) * scale, 5 * scale, 5 * scale);
         g2.fillRect(scale * 7, (liftFloors[1] * 5 + 1) * scale, 5 * scale, 5 * scale);
@@ -88,6 +81,7 @@ public class LiftsPanel extends JPanel {
         g2.fillRect(scale * 7 + scale, (liftFloors[1] * 5 + 1) * scale + scale, 3 * scale, 3 * scale);
         g2.fillRect(scale * 13 + scale, (liftFloors[2] * 5 + 1) * scale + scale, 3 * scale, 3 * scale);
 
+        // Draw people in lifts
         int liftPositionY = 2 * scale;
         int liftPosititonX = (liftFloors[0] * 5 + 1) * scale + scale;
         if (peopleInLift[0] > 0) {
@@ -127,6 +121,7 @@ public class LiftsPanel extends JPanel {
             g2.drawString("" + peopleOut[2], liftPositionY + scale * 2, liftPosititonX);
         }
 
+        // Draw people on floors
         g2.setColor(new Color(245, 245, 220));
         int peoplePositionY = scale * 20;
         int peoplePositionX = scale * 2;

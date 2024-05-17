@@ -19,6 +19,7 @@ public class CallGenerator extends Thread {
         Random rnd = new Random(28);
 
         while (programRun.get()) {
+            // Generate new call
             int fromFloor = rnd.nextInt(MAX_FLOOR) + 1;
             int destinationFloor = rnd.nextInt(MAX_FLOOR) + 1;
             while (fromFloor == destinationFloor) {
@@ -26,10 +27,12 @@ public class CallGenerator extends Thread {
             }
             Call newCall = new Call(fromFloor, destinationFloor);
 
+            // Add new call to the floor
             BlockingQueue<Call> updatedFloor = building.get(fromFloor);
             updatedFloor.add(newCall);
             building.set(fromFloor, updatedFloor);
 
+            // Sleep for randomTime ~ averageCallTime
             int sleepTime = rnd.nextInt(avgCallTime / 4) + avgCallTime;
             try {
                 Thread.sleep(sleepTime);

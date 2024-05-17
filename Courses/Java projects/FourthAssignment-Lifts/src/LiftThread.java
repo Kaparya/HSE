@@ -91,6 +91,7 @@ public class LiftThread extends Thread {
         building.set(lift.currentFloor, current);
     }
 
+    // To find the next floor (if the lift is empty), we count coefficients, than take the maximum one
     int[] countCoefficients() {
         int[] result = new int[MAX_FLOOR + 1];
 

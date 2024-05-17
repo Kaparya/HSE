@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -82,8 +81,8 @@ class Main {
 
     public static void main(String[] args) {
 
+        // User input
         int MAX_FLOOR = 10;
-
         Scanner scanner = new Scanner(System.in);
         System.out.print("Input how long you want to do this experiment (in seconds): ");
         int MAX_TIME = scanner.nextInt() * 1000;
@@ -91,6 +90,7 @@ class Main {
         int avgCallTime = scanner.nextInt();
         scanner.close();
 
+        // Create threads
         AtomicBoolean programRun = new AtomicBoolean(true);
         AtomicReferenceArray<BlockingQueue<Call>> building =
                 new AtomicReferenceArray<>(MAX_FLOOR + 1);
@@ -103,21 +103,21 @@ class Main {
         LiftThread secondLiftThread = new LiftThread(building, programRun, new Lift(2, MAX_FLOOR), MAX_FLOOR);
         LiftThread thirdLiftThread = new LiftThread(building, programRun, new Lift(2, MAX_FLOOR / 2), MAX_FLOOR);
 
-
+        // Create window for graphics
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setTitle("Async Elevators");
 
-        LiftsPanel liftsPanel = new LiftsPanel(MAX_FLOOR);
-        window.add(liftsPanel);
+        LiftsWindow liftsWindow = new LiftsWindow(MAX_FLOOR);
+        window.add(liftsWindow);
         window.pack();
         window.setLocationRelativeTo(null);
         window.setVisible(true);
         int[] peopleOnFloor = new int[MAX_FLOOR + 1];
         int[] peopleInLift = new int[3];
         int[] peopleOut = new int[3];
-        liftsPanel.repaint(
+        liftsWindow.repaint(
                 firstLiftThread.lift.currentFloor,
                 secondLiftThread.lift.currentFloor,
                 thirdLiftThread.lift.currentFloor,
@@ -126,6 +126,7 @@ class Main {
                 peopleOut
         );
 
+        // Start everything
         long startTime = System.currentTimeMillis();
 
         callGenerator.start();
@@ -133,6 +134,7 @@ class Main {
         secondLiftThread.start();
         thirdLiftThread.start();
 
+        // RUN LOOP only for drawing everything in window
         while (System.currentTimeMillis() - startTime < MAX_TIME) {
 
             printToConsole(
@@ -158,7 +160,7 @@ class Main {
                     thirdLiftThread.lift.people.size()
             };
 
-            liftsPanel.repaint(
+            liftsWindow.repaint(
                     firstLiftThread.lift.currentFloor,
                     secondLiftThread.lift.currentFloor,
                     thirdLiftThread.lift.currentFloor,
