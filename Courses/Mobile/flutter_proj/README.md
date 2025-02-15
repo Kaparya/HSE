@@ -1,16 +1,16 @@
-# flutter_proj
+# Домашнее задание №1 - мердж инкремента и API
 
-A new Flutter project.
+## Результаты
 
-## Getting Started
+<div align="center">
+  
+Здесь можно увидеть, как это работает. Видно, что запросы к апишке немного отстают (так как выполняются ассинхронно). Однако на экране показывается именно нужный.
+Если же нажимать и ждать - то все работает четко.
 
-This project is a starting point for a Flutter application.
+![Main scenario](https://github.com/user-attachments/assets/563673e3-6b6f-4ef8-bae6-7e070d390ffc)
 
-A few resources to get you started if this is your first Flutter project:
+Также, в API всего 100 ручек. Поэтому и у нас после 100-го идет 1-ый.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+![End-start](https://github.com/user-attachments/assets/cc95a209-7363-4fb9-85de-ea8504d05418)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+</div>
